@@ -146,39 +146,125 @@
             <button id="pause" type="button">Pause after this segment</button>
           </section>
           <section id="review" class="panel review" hidden>
-            <div class="section-top">
-              <h2>Review transcript</h2>
-              <span id="edit-state" class="save-state" role="status"
-                >Machine-generated</span
+            <nav class="review-nav" aria-label="Recording workspace">
+              <button
+                type="button"
+                data-review="transcript"
+                aria-pressed="true"
               >
-            </div>
-            <div class="review-fields">
-              <label
-                >Search
-                <input
-                  id="search"
-                  type="search"
-                  placeholder="Find words…" /></label
-              ><label
-                >Show timestamps
-                <select id="timestamps">
-                  <option value="segments">Segments</option>
-                  <option value="words">Words</option>
-                  <option value="none">None</option>
-                </select></label
+                Transcript
+              </button>
+              <button
+                type="button"
+                data-review="intelligence"
+                aria-pressed="false"
               >
+                Intelligence
+              </button>
+              <button type="button" data-review="ask" aria-pressed="false">
+                Ask AI
+              </button>
+              <button type="button" data-review="exports" aria-pressed="false">
+                Exports
+              </button>
+            </nav>
+            <div id="transcript-view">
+              <div class="section-top">
+                <h2>Review transcript</h2>
+                <span id="edit-state" class="save-state" role="status"
+                  >Machine-generated</span
+                >
+              </div>
+              <div class="review-fields">
+                <label
+                  >Search
+                  <input
+                    id="search"
+                    type="search"
+                    placeholder="Find words…" /></label
+                ><label
+                  >Show timestamps
+                  <select id="timestamps">
+                    <option value="segments">Segments</option>
+                    <option value="words">Words</option>
+                    <option value="none">None</option>
+                  </select></label
+                >
+              </div>
+              <p id="search-status" class="mono" aria-live="polite"></p>
+              <div id="segments"></div>
+              <div class="review-actions">
+                <button id="save" class="primary" type="button">
+                  Save edits</button
+                ><button id="copy" type="button">Copy transcript</button>
+              </div>
             </div>
-            <p id="search-status" class="mono" aria-live="polite"></p>
-            <div id="segments"></div>
-            <div class="review-actions">
-              <button id="save" class="primary" type="button">Save edits</button
-              ><button id="copy" type="button">Copy transcript</button>
+            <div id="exports-view" hidden>
+              <h2>Export transcript</h2>
+              <div
+                id="exports"
+                class="export-toolbar"
+                aria-label="Download transcript"
+              ></div>
             </div>
-            <div
-              id="exports"
-              class="export-toolbar"
-              aria-label="Download transcript"
-            ></div>
+            <div id="ai-view" hidden>
+              <h2 id="ai-heading">More than words.</h2>
+              <p id="ai-description">
+                Make sense of every conversation with source-linked findings.
+              </p>
+              <form id="ai-form">
+                <div class="ai-grid">
+                  <label
+                    >AI provider<select id="ai-provider" required></select
+                  ></label>
+                  <label>Model<select id="ai-model" required></select></label>
+                  <label
+                    >Context window<input
+                      id="ai-context"
+                      type="number"
+                      min="2048"
+                      max="262144"
+                      value="8192"
+                      required
+                  /></label>
+                  <label
+                    >Output language<input
+                      id="ai-language"
+                      value="English"
+                      maxlength="60"
+                      required
+                  /></label>
+                  <label id="ai-template-field"
+                    >Template<select id="ai-template"></select
+                  ></label>
+                  <label id="ai-detail-field"
+                    >Detail<select id="ai-detail"></select
+                  ></label>
+                </div>
+                <div class="ai-connection">
+                  <span id="ai-privacy"></span>
+                  <button id="ai-discover" type="button">
+                    Check connection
+                  </button>
+                </div>
+                <label class="ai-consent" id="ai-consent-field" hidden>
+                  <input id="ai-consent" type="checkbox" /> I authorize sending
+                  this transcript to the selected external provider.
+                </label>
+                <label id="ai-prompt-field"
+                  ><span id="ai-prompt-label">Custom instructions</span>
+                  <textarea id="ai-prompt" maxlength="1800" rows="3"></textarea>
+                </label>
+                <button class="primary" id="ai-generate" type="submit">
+                  Generate Intelligence
+                </button>
+              </form>
+              <p id="ai-message" class="feedback" role="status"></p>
+              <label class="ai-history"
+                >Saved runs<select id="ai-history"></select
+              ></label>
+              <div id="ai-result"></div>
+            </div>
           </section>
         </div>
       </section>

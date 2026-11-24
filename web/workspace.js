@@ -1,3 +1,5 @@
+import { createIntelligence } from "./intelligence.js";
+
 const $ = (id) => document.getElementById(id);
 const jobURL = (id) => "/api/jobs/" + id;
 const activeStates = new Set(["queued", "running", "pausing"]);
@@ -48,7 +50,7 @@ async function api(url, { method = "GET", body } = {}) {
         : "OpenScribe could not complete this request. Try again.",
     );
   }
-  return response.json();
+  return response.status === 204 ? null : response.json();
 }
 
 function clock(seconds) {
@@ -394,6 +396,7 @@ function showResult(result) {
     }),
   );
   renderSegments();
+  intelligence.recording(job.id);
 }
 
 function highlight(text, query) {
@@ -431,6 +434,7 @@ function renderSegments() {
     if (query && !drafts[index].toLowerCase().includes(query.toLowerCase()))
       continue;
     const row = node("div", "", "segment");
+    row.id = "transcript-segment-" + (index + 1);
     if (mode !== "none") row.append(timestampButton(segment.start));
     if (query) row.append(highlight(drafts[index], query));
     const edit = node("textarea");
@@ -506,3 +510,19 @@ window.addEventListener("beforeunload", (event) => {
 window.addEventListener("hashchange", route);
 route();
 configure();
+
+const intelligence = createIntelligence({
+  api,
+  clock,
+  node,
+  cite(reference) {
+    $("search").value = "";
+    renderSegments();
+    seek(reference.start);
+    const row = $("transcript-segment-" + reference.id);
+    if (row) {
+      row.scrollIntoView({ block: "nearest" });
+      row.querySelector("textarea")?.focus({ preventScroll: true });
+    }
+  },
+});

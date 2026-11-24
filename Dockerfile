@@ -8,7 +8,7 @@ RUN --mount=type=secret,id=build_ca \
     if [ -f /run/secrets/build_ca ]; then export PIP_CERT=/run/secrets/build_ca; fi \
     && pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu "torch==2.8.0+cpu" \
     && pip install --no-cache-dir -r requirements.txt
-COPY --chmod=0644 app.py transcribe.py server.py ./
+COPY --chmod=0644 app.py transcribe.py server.py intelligence.py intelligence_api.py intelligence_exports.py ./
 COPY web ./web
 RUN chmod -R a+rX web && useradd --create-home openscribe && mkdir outputs && chown openscribe:openscribe outputs
 USER openscribe

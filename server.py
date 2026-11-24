@@ -16,6 +16,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from whisper.tokenizer import LANGUAGES
 
+from intelligence_api import install_intelligence
 from transcribe import (
     DEFAULT_OUTPUT,
     FORMAT_SUFFIXES,
@@ -267,6 +268,7 @@ def create_app(root=None):
             path = export(reviewed(folder), folder)[suffix]
             return FileResponse(path, filename=path.name)
 
+    install_intelligence(app, directory, reviewed, local_request)
     return app
 
 

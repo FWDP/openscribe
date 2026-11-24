@@ -94,3 +94,28 @@ Live partial transcript, estimated completion time, and speaker diarization are 
 [Desktop upload](docs/screenshots/openscribe-desktop.png) · [Transcript review](docs/screenshots/openscribe-review.png) · [Mobile dark mode](docs/screenshots/openscribe-mobile-dark.png)
 
 The review screenshot uses synthetic speech and test transcript text.
+
+## OpenScribe Intelligence
+
+Open a completed recording, choose **Intelligence**, and check the provider connection. Select a model, template, detail level and output language. Every run records the saved transcript version. **Ask AI** searches the full saved transcript in parts and returns timestamp-linked evidence where the model finds support.
+
+### Run locally with Ollama
+
+1. Install [Ollama](https://ollama.com/download) and start it with `ollama serve` if the installer hasn't started it.
+2. In a second terminal run `ollama pull qwen2.5:7b`. For a smaller machine try `ollama pull qwen2.5:3b`. Smaller models are more likely to return incomplete or invalid structure.
+3. In the OpenScribe checkout activate the Python environment, run `python -m pip install -r requirements.txt`, and start the workspace with `python -m uvicorn server:app --host 127.0.0.1 --port 7860`.
+4. In **Intelligence**, select Ollama and check the connection. Choose the installed model, then generate a run from a completed transcript. A context window of 8192 is the default. Use a value supported by both your model and server. Large values increase memory use.
+5. For the same host, OpenScribe defaults to `http://127.0.0.1:11434`. Set `OLLAMA_URL` in the server process to use a different endpoint. If OpenScribe runs in a container, point it to a reachable Ollama host instead of the container's loopback.
+
+### Optional providers
+
+| Provider | Server configuration |
+| --- | --- |
+| OpenAI-compatible | `OPENSCRIBE_AI_URL` ending in the provider's API base, usually `/v1`. Supply `OPENSCRIBE_AI_KEY` if required. The endpoint must support model listing, chat completions and JSON responses. |
+| OpenAI | `OPENAI_API_KEY` |
+| Anthropic | `ANTHROPIC_API_KEY` |
+| Google Gemini | `GEMINI_API_KEY` |
+
+Set `OPENSCRIBE_AI_TIMEOUT` to override the default 120-second per-request timeout and `OPENSCRIBE_AI_CONTEXT` to change the default context window shown in the workspace. Credentials belong in the server environment. Endpoints outside loopback require explicit confirmation before each new or resumed run.
+
+Run **Generate again** or **Regenerate section** to create a separate version. Edit findings or rename a run without changing the transcript. Export selected sections as TXT, Markdown, JSON, PDF, or DOCX. Delete a run to remove its snapshot, edits and checkpoints. See [architecture and limitations](docs/intelligence.md) for storage details and validation.

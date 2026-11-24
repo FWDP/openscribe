@@ -709,3 +709,111 @@ footer a {
     font-size: 0.78rem;
   }
 }
+
+.review-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 1.25rem;
+}
+.review-nav button {
+  font-size: 0.85rem;
+  padding: 0.42rem 0.62rem;
+}
+.review-nav button[aria-pressed="true"] {
+  background: var(--lavender);
+  border-color: #3e2a86;
+  color: #282044;
+}
+.ai-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+#ai-view label {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.84rem;
+  font-weight: 650;
+}
+#ai-view select,
+#ai-view input:not([type="checkbox"]),
+#ai-view textarea {
+  min-width: 0;
+  width: 100%;
+}
+.ai-connection {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin: 0.65rem 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+#ai-view .ai-consent {
+  display: flex;
+  align-items: start;
+  gap: 0.5rem;
+  margin-block: 0.65rem;
+}
+#ai-view textarea {
+  resize: vertical;
+  padding: 0.55rem;
+}
+#ai-generate,
+.ai-history,
+#ai-result {
+  margin-top: 0.85rem;
+}
+#ai-result progress {
+  display: block;
+  width: 100%;
+  accent-color: var(--action);
+  margin-bottom: 0.7rem;
+}
+.ai-section {
+  border: 1px solid var(--line);
+  border-radius: var(--round);
+  margin-top: 0.65rem;
+  padding: 0.65rem;
+}
+.ai-section summary {
+  cursor: pointer;
+  font: 700 1rem var(--heading);
+}
+.ai-finding {
+  display: grid;
+  gap: 0.25rem;
+  margin-block: 0.7rem;
+}
+.ai-citations {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+.ai-citations button {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+}
+.ai-warning {
+  border-left: 3px solid var(--action);
+  padding-left: 0.6rem;
+}
+#ai-result > label {
+  margin-block: 0.65rem;
+}
+@media (max-width: 440px) {
+  .ai-grid {
+    grid-template-columns: 1fr;
+  }
+}
+#ai-view .ai-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-block: 0.55rem;
+}
+.ai-section > button + button {
+  margin-inline-start: 0.4rem;
+}

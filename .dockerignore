@@ -6,3 +6,6 @@
 !server.py
 !web/
 !web/**
+!intelligence.py
+!intelligence_api.py
+!intelligence_exports.py
