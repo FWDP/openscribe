@@ -221,3 +221,18 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Local recordings, model caches, transcripts, and job state
+outputs/
+recordings/
+models/
+*.m4a
+*.mp3
+*.wav
+*.mp4
+*.flac
+*.webm
+*.pt
+*.safetensors
+checkpoint.json
+transcript.*

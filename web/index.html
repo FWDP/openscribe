@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="OpenScribe turns recordings into editable transcripts on your own machine."
+    />
+    <title>OpenScribe — You talk. We take notes.</title>
+    <link rel="stylesheet" href="/assets/style.css" />
+    <script type="module" src="/assets/workspace.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to workspace</a>
+    <header class="top">
+      <a class="brand" href="#new"
+        ><span class="brand-mark" aria-hidden="true"
+          ><i></i><i></i><i></i><i></i><i></i></span
+        >OpenScribe<span class="brand-dot">.</span></a
+      >
+      <nav aria-label="Workspace">
+        <a href="#new" data-page="new">New transcription</a>
+        <a href="#history" data-page="history">My transcripts</a>
+        <a href="#settings" data-page="settings">Settings</a>
+        <a href="#about" data-page="about">About</a>
+      </nav>
+      <a class="github" href="https://github.com/FWDP/openscribe"
+        >GitHub <span class="arrow" aria-hidden="true"></span
+      ></a>
+    </header>
+    <main id="main" tabindex="-1">
+      <section id="new" class="page">
+        <div class="hero">
+          <div>
+            <h1>You talk.<br /><span>We take notes.</span></h1>
+            <p>Turn conversations into knowledge. Own your data.</p>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="hero-wave"></div>
+          </div>
+        </div>
+        <div class="workspace" id="workspace">
+          <section class="recording panel">
+            <h2><span class="step" aria-hidden="true">↑</span> Recording</h2>
+            <label class="drop" id="drop" for="file">
+              <input
+                type="file"
+                id="file"
+                accept=".m4a,.mp3,.wav,.mp4,.flac,.webm"
+              />
+              <span class="upload-mark" aria-hidden="true">↑</span>
+              <strong>Drop the good stuff here.</strong>
+              <span>or <span class="browse">browse files</span></span>
+              <small>M4A · MP3 · WAV · MP4 · FLAC · WebM</small>
+            </label>
+            <p id="upload-status" class="feedback" role="status"></p>
+            <div id="recording-info" hidden>
+              <div class="recording-line">
+                <strong id="filename"></strong
+                ><span id="metadata" class="mono"></span>
+              </div>
+              <audio id="audio" controls preload="metadata">
+                <track kind="captions" id="caption-track" label="Transcript" />
+              </audio>
+              <div id="waveform" class="waveform" hidden>
+                <img id="wave-image" alt="" />
+                <input
+                  type="range"
+                  id="seek"
+                  aria-label="Seek recording"
+                  min="0"
+                  max="1"
+                  step=".01"
+                  value="0"
+                />
+              </div>
+              <div class="controls">
+                <button id="back" type="button">−10s</button
+                ><output id="position" class="mono">00:00:00</output
+                ><button id="forward" type="button">+10s</button
+                ><label
+                  >Speed
+                  <select id="speed">
+                    <option>.75</option>
+                    <option selected>1</option>
+                    <option>1.25</option>
+                    <option>1.5</option>
+                    <option>2</option>
+                  </select></label
+                >
+              </div>
+            </div>
+          </section>
+          <section class="options panel" id="options">
+            <h2>
+              <span class="step" aria-hidden="true">≈</span> Transcription
+            </h2>
+            <div class="field">
+              <label for="model">Whisper model</label
+              ><select id="model"></select>
+            </div>
+            <div class="field">
+              <label for="language">Spoken language</label
+              ><select id="language"></select>
+            </div>
+            <div class="field" id="backend-field" hidden>
+              <label for="backend">Backend</label
+              ><select id="backend">
+                <option value="whisper">OpenAI Whisper</option>
+                <option value="faster">Faster-Whisper</option>
+              </select>
+            </div>
+            <p class="device" id="device">Checking hardware…</p>
+            <button id="transcribe" class="primary" type="button" disabled>
+              Let’s transcribe!
+            </button>
+            <p class="privacy">
+              <b aria-hidden="true">◇</b> Your recordings. Your data.
+            </p>
+          </section>
+          <section
+            id="progress-panel"
+            class="panel progress-panel"
+            hidden
+            aria-label="Transcription progress"
+          >
+            <div class="section-top">
+              <h2>Processing</h2>
+              <span id="percent" class="mono"></span>
+            </div>
+            <progress
+              id="progress"
+              max="1"
+              value="0"
+              aria-label="Duration processed"
+            ></progress>
+            <p id="stage" role="status"></p>
+            <p id="progress-meta" class="mono"></p>
+            <p
+              id="processing-note"
+              class="processing-note"
+              aria-hidden="true"
+            ></p>
+            <button id="pause" type="button">Pause after this segment</button>
+          </section>
+          <section id="review" class="panel review" hidden>
+            <div class="section-top">
+              <h2>Review transcript</h2>
+              <span id="edit-state" class="save-state" role="status"
+                >Machine-generated</span
+              >
+            </div>
+            <div class="review-fields">
+              <label
+                >Search
+                <input
+                  id="search"
+                  type="search"
+                  placeholder="Find words…" /></label
+              ><label
+                >Show timestamps
+                <select id="timestamps">
+                  <option value="segments">Segments</option>
+                  <option value="words">Words</option>
+                  <option value="none">None</option>
+                </select></label
+              >
+            </div>
+            <p id="search-status" class="mono" aria-live="polite"></p>
+            <div id="segments"></div>
+            <div class="review-actions">
+              <button id="save" class="primary" type="button">Save edits</button
+              ><button id="copy" type="button">Copy transcript</button>
+            </div>
+            <div
+              id="exports"
+              class="export-toolbar"
+              aria-label="Download transcript"
+            ></div>
+          </section>
+        </div>
+      </section>
+      <section id="history" class="page secondary" hidden>
+        <h1>My transcripts<span>.</span></h1>
+        <p>Recordings and edits saved on this OpenScribe installation.</p>
+        <ul id="jobs"></ul>
+      </section>
+      <section id="settings" class="page secondary" hidden>
+        <h1>Settings<span>.</span></h1>
+        <div class="panel settings-panel">
+          <label for="theme">Appearance</label
+          ><select id="theme">
+            <option value="system">Match device</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+          <p>Appearance and timestamp display are saved in this browser.</p>
+        </div>
+      </section>
+      <section id="about" class="page secondary" hidden>
+        <h1>About OpenScribe<span>.</span></h1>
+        <div class="panel settings-panel">
+          <p>
+            An open-source project by Filipino Web Development Peers (FWDP).
+          </p>
+          <p>
+            OpenScribe transcribes recordings with Whisper on the machine
+            running the app. It keeps the original spoken language and saves
+            your recordings and transcripts locally.
+          </p>
+          <p>Version 0.1.0 · Apache License 2.0</p>
+          <ul class="project-links">
+            <li>
+              <a href="https://github.com/FWDP/openscribe#readme"
+                >Documentation</a
+              >
+            </li>
+            <li>
+              <a href="https://github.com/FWDP/openscribe/fork">Contribute</a>
+            </li>
+            <li>
+              <a href="https://github.com/FWDP/openscribe/issues/new"
+                >Report an issue</a
+              >
+            </li>
+            <li>
+              <a href="https://github.com/FWDP/openscribe/blob/main/LICENSE"
+                >License</a
+              >
+            </li>
+          </ul>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <span
+        >An open-source project by
+        <strong>Filipino Web Development Peers (FWDP).</strong></span
+      ><a href="https://github.com/FWDP/openscribe/fork">Contribute</a
+      ><span class="mono">v0.1.0</span>
+    </footer>
+  </body>
+</html>

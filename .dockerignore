@@ -1,0 +1,8 @@
+**
+!Dockerfile
+!requirements.txt
+!app.py
+!transcribe.py
+!server.py
+!web/
+!web/**

@@ -1,0 +1,26 @@
+name: Tests
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: python -m pip install --index-url https://download.pytorch.org/whl/cpu "torch==2.8.0+cpu"
+      - run: python -m pip install -r requirements.txt pytest
+      - run: python -m pytest -q
+      - name: Official Whisper CPU smoke test
+        run: |
+          ffmpeg -hide_banner -loglevel error -f lavfi \
+            -i "flite=text='The quick brown fox jumps over the lazy dog. This is an Open Scribe transcription test.':voice=slt" \
+            "$RUNNER_TEMP/speech.m4a"
+          PYTHONPATH=. python tests/whisper_smoke.py "$RUNNER_TEMP/speech.m4a" "$RUNNER_TEMP/results"
